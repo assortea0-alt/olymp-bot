@@ -1,0 +1,20 @@
+{
+  "bot_token": "СЮДА_ТОКЕН_ОТ_BOTFATHER",
+  "chat_id": "СЮДА_ТВОЙ_CHAT_ID",
+  "sheet_id": "16wKSRx8b7BC8YQeT9ulPl3gHKJ7hHWq0",
+  "remind_days_before": [
+    14,
+    7,
+    3,
+    1,
+    0
+  ],
+  "stage_remind_days": [
+    3,
+    1,
+    0
+  ],
+  "watch_sites": true,
+  "only_in_perechen": true,
+  "my_olympiads": []
+}

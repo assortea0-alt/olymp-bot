@@ -1,0 +1,54 @@
+name: Напоминания об олимпиадах
+
+on:
+  schedule:
+    # 05:00 UTC = 08:00 по Москве = 12:00 по Новосибирску.
+    # GitHub запускает расписание с задержкой, обычно 5-20 минут.
+    - cron: "0 5 * * *"
+  workflow_dispatch:        # кнопка «Run workflow» для запуска вручную
+
+permissions:
+  contents: write           # нужно, чтобы коммитить state.json обратно
+
+concurrency:
+  group: olympiads          # два запуска одновременно не нужны
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Запустить бота
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          WATCH_SITES: "true"
+        run: python olymp_bot.py
+
+      - name: Запомнить состояние
+        # state.json хранит отправленные напоминания и снимок таблицы.
+        # Без коммита обратно каждый запуск считался бы первым, и бот
+        # присылал бы одно и то же каждый день.
+        run: |
+          git config user.name "olympiad-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state.json
+          if git diff --quiet --cached; then
+            echo "состояние не изменилось"
+          else
+            git commit -m "state: $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Лог запуска
+        if: always()
+        run: cat bot.log || echo "лога нет"
