@@ -166,7 +166,13 @@ def save_state(state):
 # ---------------------------------------------------------------------- telegram
 
 def tg_send(cfg, text, dry_run=False):
-    """Отправляет сообщение, разбивая по лимиту Telegram в 4096 символов."""
+    """Отправляет сообщение, разбивая по лимиту Telegram в 4096 символов.
+
+    Возвращает True, только если Telegram принял все куски. Вызывающий
+    обязан проверить результат: если отправка не удалась, состояние
+    сохранять нельзя, иначе напоминание будет считаться доставленным
+    и больше никогда не повторится.
+    """
     chunks, cur = [], ""
     for line in text.split("\n"):
         if len(cur) + len(line) + 1 > 3800:
@@ -176,6 +182,7 @@ def tg_send(cfg, text, dry_run=False):
     if cur.strip():
         chunks.append(cur)
 
+    ok = True
     for chunk in chunks:
         if dry_run:
             print("--- telegram ---")
@@ -190,10 +197,19 @@ def tg_send(cfg, text, dry_run=False):
                 "disable_web_page_preview": "true",
             })
             if r.status_code != 200:
-                print("Telegram ответил %s: %s" % (r.status_code, r.text[:300]))
+                ok = False
+                print("ОШИБКА: Telegram ответил %s: %s"
+                      % (r.status_code, r.text[:300]))
+                if r.status_code == 401:
+                    print("  -> неверный bot_token (секрет TG_BOT_TOKEN)")
+                elif r.status_code == 400:
+                    print("  -> похоже на неверный chat_id (секрет TG_CHAT_ID) "
+                          "или боту не нажимали /start")
         except requests.RequestException as e:
-            print("Не удалось отправить в Telegram: %s" % e)
+            ok = False
+            print("ОШИБКА: не удалось отправить в Telegram: %s" % e)
         time.sleep(0.4)
+    return ok
 
 
 # ------------------------------------------------------------------------- даты
@@ -596,18 +612,32 @@ def main():
 
     state["sheet_rows"] = {row_key(r): r for r in rows}
 
+    delivered = True
     if first_run or args.digest:
-        tg_send(cfg, digest(cfg, rows, today), args.dry_run)
-        if first_run:
-            print("первый запуск: сохранил снимок, отправил дайджест")
+        delivered &= tg_send(cfg, digest(cfg, rows, today), args.dry_run)
 
     if notify:
-        tg_send(cfg, "\n\n".join(notify), args.dry_run)
-        print("отправлено уведомлений: %d" % len(notify))
+        delivered &= tg_send(cfg, "\n\n".join(notify), args.dry_run)
+        print("сообщений к отправке: %d" % len(notify))
     else:
         print("изменений нет")
 
+    # Состояние — это память о доставленном. Сохранять его при сбое отправки
+    # нельзя: напоминание окажется помечено как отправленное и не повторится
+    # никогда. Лучше упасть, повторить в следующий раз и получить от GitHub
+    # письмо о красном запуске.
+    if not delivered:
+        print("состояние НЕ сохранено — на следующем запуске попробуем снова")
+        sys.exit("Telegram не принял сообщения, см. ошибки выше")
+
+    if args.dry_run:
+        # репетиция не должна глушить настоящую отправку: если записать
+        # напоминание в состояние, бот сочтёт его доставленным
+        print("пробный запуск: состояние не изменено")
+        return
+
     save_state(state)
+    print("готово, состояние сохранено")
 
 
 if __name__ == "__main__":
