@@ -440,15 +440,20 @@ def interesting(cfg, r):
     return True
 
 
-def reminders(cfg, rows, state, today):
-    """Напоминания о дедлайнах регистрации и о начале этапов."""
+def reminders(cfg, rows, state, today, repeat=False):
+    """Напоминания о дедлайнах регистрации и о начале этапов.
+
+    repeat=True — вечерний повтор: присылаем то же, что уже отправляли
+    сегодня, не глядя на память об отправленном. Нужен, чтобы напоминание
+    приходило дважды в день и его труднее было пропустить.
+    """
     season = season_start_year(today)
     sent = set(state.setdefault("sent", []))
     msgs = []
 
     def fire(key, when, days, title, r):
         stamp = "%s|%s|%s|%s" % (key, when.isoformat(), days, title)
-        if stamp in sent:
+        if stamp in sent and not repeat:
             return
         if days == 0:
             lead = "<b>сегодня</b>"
@@ -578,6 +583,9 @@ def main():
                     help="прислать полную картину по всем олимпиадам")
     ap.add_argument("--no-sites", action="store_true",
                     help="не обходить сайты, только таблица и напоминания")
+    ap.add_argument("--repeat", action="store_true",
+                    help="вечерний повтор: прислать сегодняшние напоминания "
+                         "заново, даже если утром они уже уходили")
     ap.add_argument("--check-sites", action="store_true",
                     help="самопроверка: какие сайты открываются и сколько дат видно")
     args = ap.parse_args()
@@ -622,7 +630,10 @@ def main():
     if cfg["watch_sites"] and not args.no_sites:
         watch_sites(cfg, rows, state, notify)
 
-    notify += reminders(cfg, rows, state, today)
+    repeat = args.repeat or _env_flag("REPEAT", False)
+    if repeat:
+        print("вечерний повтор: напоминания отправляются заново")
+    notify += reminders(cfg, rows, state, today, repeat=repeat)
 
     state["sheet_rows"] = {row_key(r): r for r in rows}
 
