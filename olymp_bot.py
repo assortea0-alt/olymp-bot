@@ -314,6 +314,33 @@ def is_reg_deadline(r, dates):
     return len(dates) > 1
 
 
+def is_open(reg):
+    """Запись идёт прямо сейчас."""
+    return "ОТКРЫТА" in (reg or "").upper()
+
+
+def opened_message(r, prev):
+    """Отдельное громкое сообщение: запись только что открылась.
+
+    Нужно для олимпиад, у которых дата открытия заранее не объявлена —
+    про них нельзя напомнить заранее, остаётся сообщить по факту.
+    """
+    body = ["\U0001F7E2 <b>ОТКРЫЛАСЬ РЕГИСТРАЦИЯ</b>",
+            "<b>%s</b> — %s" % (html.escape(r["olympiad"]),
+                                html.escape(r["stage"]))]
+    if r["level"] and r["level"] not in ("—", ""):
+        body.append("Уровень %s" % html.escape(r["level"]))
+    if r["date"]:
+        body.append("Срок: <b>%s</b>" % html.escape(r["date"]))
+    if prev and prev.get("date") != r["date"] and prev.get("date"):
+        body.append("<i>(раньше в таблице стояло: %s)</i>"
+                    % html.escape(prev["date"]))
+    if r["note"]:
+        body.append("<i>%s</i>" % html.escape(r["note"]))
+    body.append("Записывайся: %s" % (html.escape(r["link"]) or "ссылки нет"))
+    return "\n".join(body)
+
+
 def diff_sheet(old_rows, new_rows):
     """Что изменилось в таблице с прошлого запуска."""
     old = dict(old_rows or {})
@@ -323,6 +350,11 @@ def diff_sheet(old_rows, new_rows):
         key = row_key(r)
         seen.add(key)
         prev = old.get(key)
+        if prev is not None and is_open(r["reg"]) and not is_open(prev.get("reg")):
+            # переход «не открыта» -> «открыта»: это главная новость по
+            # строке, остальные изменения в неё уже включены
+            msgs.append(opened_message(r, prev))
+            continue
         if prev is None:
             msgs.append("\U0001F195 <b>Новый этап в таблице</b>\n%s\nДата: %s\nРегистрация: %s"
                         % (html.escape(key), html.escape(r["date"] or "—"),
@@ -461,7 +493,12 @@ def reminders(cfg, rows, state, today, repeat=False):
             lead = "<b>завтра</b>"
         else:
             lead = "через <b>%d дн.</b>" % days
-        body = ["⏰ <b>%s</b> — %s (%s)" % (title, lead, human_date(when)),
+        if days == 0 and title == "Открывается регистрация":
+            head = "\U0001F7E2 <b>РЕГИСТРАЦИЯ ОТКРЫВАЕТСЯ СЕГОДНЯ</b> (%s)" \
+                   % human_date(when)
+        else:
+            head = "⏰ <b>%s</b> — %s (%s)" % (title, lead, human_date(when))
+        body = [head,
                 "%s — %s" % (html.escape(r["olympiad"]), html.escape(r["stage"]))]
         if r["level"] and r["level"] not in ("—", ""):
             body.append("Уровень %s" % html.escape(r["level"]))
