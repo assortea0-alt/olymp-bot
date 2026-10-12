@@ -3,13 +3,19 @@
   "chat_id": "СЮДА_ТВОЙ_CHAT_ID",
   "sheet_id": "16wKSRx8b7BC8YQeT9ulPl3gHKJ7hHWq0",
   "remind_days_before": [
+    25,
     14,
     7,
+    5,
     3,
     1,
     0
   ],
   "stage_remind_days": [
+    25,
+    14,
+    7,
+    5,
     3,
     1,
     0

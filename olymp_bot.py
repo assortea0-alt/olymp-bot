@@ -140,8 +140,8 @@ def load_config():
         sys.exit("В config.json ещё стоят заглушки. Впиши настоящие bot_token "
                  "(от @BotFather) и chat_id (его покажет get_chat_id.py).")
     cfg.setdefault("sheet_id", "16wKSRx8b7BC8YQeT9ulPl3gHKJ7hHWq0")
-    cfg.setdefault("remind_days_before", [14, 7, 3, 1, 0])
-    cfg.setdefault("stage_remind_days", [3, 1, 0])
+    cfg.setdefault("remind_days_before", [25, 14, 7, 5, 3, 1, 0])
+    cfg.setdefault("stage_remind_days", [25, 14, 7, 5, 3, 1, 0])
     cfg.setdefault("watch_sites", True)
     cfg.setdefault("only_in_perechen", True)
     cfg.setdefault("my_olympiads", [])
@@ -491,6 +491,20 @@ def reminders(cfg, rows, state, today):
             days = (opening - today).days
             if days in cfg["remind_days_before"]:
                 fire(key, opening, days, "Открывается регистрация", r)
+        elif "егистрация" in r["stage"]:
+            # Строка про запись, у которой срок в таблице есть, а графа
+            # статуса не заполнена («срок записи не объявлен»). Раньше такие
+            # проваливались мимо всех правил и не напоминали вообще — так
+            # терялась Всесибирская, уровень I. Напоминаем и про открытие
+            # окна записи, и про его закрытие.
+            opening, deadline = min(dates), max(dates)
+            days = (opening - today).days
+            if days in cfg["remind_days_before"]:
+                fire(key, opening, days, "Открывается регистрация", r)
+            if deadline != opening:
+                days = (deadline - today).days
+                if days in cfg["remind_days_before"]:
+                    fire(key, deadline, days, "Дедлайн регистрации", r)
 
         if "егистрация" not in r["stage"]:
             start = min(dates)
