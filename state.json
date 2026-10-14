@@ -13,9 +13,10 @@
   },
   "https://dovuz.innopolis.university/innopolis-open/informatics": {
    "dates": [
-    "14.10",
     "17.10",
     "18.10",
+    "18.11",
+    "19.10",
     "21.11",
     "22.11",
     "28.02"
@@ -46,7 +47,7 @@
     "30.01",
     "31.08"
    ],
-   "fails": 0
+   "fails": 1
   },
   "https://mos-inf.olimpiada.ru/": {
    "dates": [
@@ -269,7 +270,7 @@
   },
   "https://open.olympiads.ru/": {
    "dates": [],
-   "fails": 8
+   "fails": 9
   },
   "https://sch-olymp.spbu.ru/": {
    "dates": [
@@ -867,5 +868,5 @@
    "reg": "СРОК ЗАПИСИ НЕ ОБЪЯВЛЕН"
   }
  },
- "last_run": "2026-10-14T05:16:56"
+ "last_run": "2026-10-14T13:32:33"
 }
