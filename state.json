@@ -272,7 +272,7 @@
   },
   "https://open.olympiads.ru/": {
    "dates": [],
-   "fails": 18
+   "fails": 19
   },
   "https://sch-olymp.spbu.ru/": {
    "dates": [
@@ -888,5 +888,5 @@
    "reg": "СРОК ЗАПИСИ НЕ ОБЪЯВЛЕН"
   }
  },
- "last_run": "2026-10-19T05:21:00"
+ "last_run": "2026-10-19T13:39:47"
 }
