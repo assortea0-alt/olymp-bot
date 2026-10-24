@@ -246,7 +246,7 @@
     "29.12",
     "31.01"
    ],
-   "fails": 2
+   "fails": 3
   },
   "https://olymp.msu.ru/rus/news": {
    "dates": [
@@ -345,7 +345,7 @@
   },
   "https://uc1.1c.ru/lp/olimpiada-nashe-buduschee/uchastnikam/": {
    "dates": [],
-   "fails": 8
+   "fails": 9
   }
  },
  "sent": [
@@ -945,5 +945,5 @@
    "reg": "НЕ ПОДТВЕРЖДЕНО"
   }
  },
- "last_run": "2026-10-24T05:15:04"
+ "last_run": "2026-10-24T13:26:31"
 }
