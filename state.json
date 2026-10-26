@@ -345,7 +345,7 @@
   },
   "https://uc1.1c.ru/lp/olimpiada-nashe-buduschee/uchastnikam/": {
    "dates": [],
-   "fails": 12
+   "fails": 13
   }
  },
  "sent": [
@@ -953,5 +953,5 @@
    "reg": "НЕ ПОДТВЕРЖДЕНО"
   }
  },
- "last_run": "2026-10-26T05:21:34"
+ "last_run": "2026-10-26T15:09:19"
 }
