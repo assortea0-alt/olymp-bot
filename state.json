@@ -353,7 +353,7 @@
   },
   "https://uc1.1c.ru/lp/olimpiada-nashe-buduschee/uchastnikam/": {
    "dates": [],
-   "fails": 24
+   "fails": 25
   },
   "https://sesc.nsu.ru/olymp-vsesib/sections/informatics/": {
    "dates": [
@@ -364,7 +364,7 @@
     "19.10",
     "21.02"
    ],
-   "fails": 0
+   "fails": 1
   },
   "https://ai.edu.gov.ru/final": {
    "dates": [
@@ -992,5 +992,5 @@
    "reg": "НЕ ПОДТВЕРЖДЕНО"
   }
  },
- "last_run": "2026-11-01T05:30:23"
+ "last_run": "2026-11-01T13:42:11"
 }
