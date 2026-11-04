@@ -281,7 +281,7 @@
     "14.01",
     "17.11"
    ],
-   "fails": 0
+   "fails": 1
   },
   "https://sch-olymp.spbu.ru/": {
    "dates": [
@@ -353,7 +353,7 @@
   },
   "https://uc1.1c.ru/lp/olimpiada-nashe-buduschee/uchastnikam/": {
    "dates": [],
-   "fails": 30
+   "fails": 31
   },
   "https://sesc.nsu.ru/olymp-vsesib/sections/informatics/": {
    "dates": [
@@ -1002,5 +1002,5 @@
    "reg": "НЕ ПОДТВЕРЖДЕНО"
   }
  },
- "last_run": "2026-11-04T05:42:48"
+ "last_run": "2026-11-04T14:03:34"
 }
