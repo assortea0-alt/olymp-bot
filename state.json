@@ -240,14 +240,11 @@
   },
   "https://olymp.mephi.ru/rosatom_it": {
    "dates": [
-    "06.11",
-    "18.01",
-    "20.11",
-    "25.11.2025",
-    "29.12",
-    "31.01"
+    "11.11",
+    "30.01",
+    "30.11"
    ],
-   "fails": 1
+   "fails": 0
   },
   "https://olymp.msu.ru/rus/news": {
    "dates": [
@@ -281,7 +278,7 @@
     "14.01",
     "17.11"
    ],
-   "fails": 5
+   "fails": 6
   },
   "https://sch-olymp.spbu.ru/": {
    "dates": [
@@ -353,7 +350,7 @@
   },
   "https://uc1.1c.ru/lp/olimpiada-nashe-buduschee/uchastnikam/": {
    "dates": [],
-   "fails": 35
+   "fails": 36
   },
   "https://sesc.nsu.ru/olymp-vsesib/sections/informatics/": {
    "dates": [
@@ -1010,5 +1007,5 @@
    "reg": "НЕ ПОДТВЕРЖДЕНО"
   }
  },
- "last_run": "2026-11-06T14:03:59"
+ "last_run": "2026-11-07T05:33:25"
 }
